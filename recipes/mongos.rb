@@ -37,7 +37,7 @@ configsrvs = search(
    chef_environment:#{node.chef_environment}"
 )
 
-Chef::Log.info("configservers length: #{configsrvs.length}")
+Chef::Log.info("cluster_name: #{node['mongodb']['cluster_name']}")
 if configsrvs.length != 1 && configsrvs.length != 3
   Chef::Log.error("Found #{configsrvs.length} configservers, need either one or three of them")
   fail 'Wrong number of configserver nodes' unless Chef::Config[:solo]

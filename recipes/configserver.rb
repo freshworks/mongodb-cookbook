@@ -21,7 +21,7 @@
 
 node.set[:mongodb][:is_configserver] = true
 node.set[:mongodb][:cluster_name]=  node['mongodb']['cluster_name']
-
+Chef::Log.info("node['mongodb']['cluster_name'] : #{node['mongodb']['cluster_name']}")
 include_recipe 'mongodb::install'
 
 # mongodb_instance will set configsvr = true in the config file.

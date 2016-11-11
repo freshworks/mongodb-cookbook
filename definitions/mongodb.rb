@@ -88,6 +88,9 @@ define :mongodb_instance,
   new_resource.template_cookbook          = node['mongodb']['template_cookbook']
   new_resource.ulimit                     = node['mongodb']['ulimit']
   new_resource.reload_action              = node['mongodb']['reload_action']
+  Chef::Log.info("Inside Mongodb.rb")
+  Chef::Log.info("node['mongodb']['is_configserver'] : #{node['mongodb']['is_configserver']}")
+  Chef::Log.info("node['mongodb']['cluster_name'] : #{node['mongodb']['cluster_name']}")
 
   if node['mongodb']['apt_repo'] == 'ubuntu-upstart'
     new_resource.init_file = File.join(node['mongodb']['init_dir'], "#{new_resource.name}.conf")

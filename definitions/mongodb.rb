@@ -258,8 +258,4 @@ define :mongodb_instance,
       action :nothing
     end
   end
-
-  if new_resource.is_configserver
-    node.save
-  end
 end

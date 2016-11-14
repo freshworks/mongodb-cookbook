@@ -91,6 +91,7 @@ define :mongodb_instance,
   Chef::Log.info("Inside Mongodb.rb")
   Chef::Log.info("node['mongodb']['is_configserver'] : #{node['mongodb']['is_configserver']}")
   Chef::Log.info("node['mongodb']['cluster_name'] : #{node['mongodb']['cluster_name']}")
+  Chef::Log.info("node['mongodb']['apt_repo'] : #{node['mongodb']['apt_repo']}")
 
   if node['mongodb']['apt_repo'] == 'ubuntu-upstart'
     new_resource.init_file = File.join(node['mongodb']['init_dir'], "#{new_resource.name}.conf")
@@ -125,6 +126,15 @@ define :mongodb_instance,
     replicaset_name = nil
   end
 
+  if new_resource.type != "mongos"
+    provider = "mongod"
+  else
+    provider = "mongos"
+    # mongos will fail to start if dbpath is set
+    node[:mongodb][:config].delete('dbpath')
+    node[:mongodb][:config][:configdb] = new_resource.configserver_nodes.collect{|n| "#{(n['mongodb']['configserver_url'] || n['fqdn'])}:#{n['mongodb']['config']['port']}" }.sort.join(",")
+  end
+  
   # default file
   template new_resource.sysconfig_file do
     cookbook new_resource.template_cookbook

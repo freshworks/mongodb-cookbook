@@ -132,7 +132,7 @@ define :mongodb_instance,
     provider = "mongos"
     # mongos will fail to start if dbpath is set
     node[:mongodb][:config].delete('dbpath')
-    node[:mongodb][:config][:configdb] = new_resource.configserver_nodes.collect{|n| "#{(n['mongodb']['configserver_url'] || n['fqdn'])}:#{n['mongodb']['config']['port']}" }.sort.join(",")
+    # node[:mongodb][:config][:configdb] = new_resource.configserver_nodes.collect{|n| "#{(n['mongodb']['configserver_url'] || n['fqdn'])}:#{n['mongodb']['config']['port']}" }.sort.join(",")
   end
   
   # default file

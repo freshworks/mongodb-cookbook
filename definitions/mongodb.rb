@@ -125,15 +125,6 @@ define :mongodb_instance,
     # not a replicaset, so no name
     replicaset_name = nil
   end
-
-  if new_resource.type != "mongos"
-    provider = "mongod"
-  else
-    provider = "mongos"
-    # mongos will fail to start if dbpath is set
-    node[:mongodb][:config].delete('dbpath')
-    # node[:mongodb][:config][:configdb] = new_resource.configserver_nodes.collect{|n| "#{(n['mongodb']['configserver_url'] || n['fqdn'])}:#{n['mongodb']['config']['port']}" }.sort.join(",")
-  end
   
   # default file
   template new_resource.sysconfig_file do
@@ -219,8 +210,10 @@ define :mongodb_instance,
   Chef::Log.info("new_resource.auto_configure_replicaset -> #{new_resource.auto_configure_replicaset}")
   # service
   service new_resource.name do
+    Chef::Log.info("Inside #{new_resource.name} service")
     provider Chef::Provider::Service::Upstart if node['mongodb']['apt_repo'] == 'ubuntu-upstart'
     supports :status => true, :restart => true
+    Chef::Log.info("new_resource.service_notifies -> #{new_resource.service_notifies}")
     action new_resource.service_action
     new_resource.service_notifies.each do |service_notify|
       notifies :run, service_notify
@@ -269,6 +262,7 @@ define :mongodb_instance,
     )
     Chef::Log.info("shard_nodes.inspect -> #{shard_nodes.inspect}")
     ruby_block 'config_sharding' do
+      Chef::Log.info("Inside Config Sharding")      
       block do
         MongoDB.configure_shards(node, shard_nodes)
         MongoDB.configure_sharded_collections(node, new_resource.sharded_collections)
@@ -277,7 +271,4 @@ define :mongodb_instance,
     end
   end
 
-  if new_resource.is_configserver
-    node.save
-  end
 end

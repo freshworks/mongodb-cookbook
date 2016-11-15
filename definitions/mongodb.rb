@@ -35,14 +35,18 @@ define :mongodb_instance,
 
   # Make changes to node['mongodb']['config'] before copying to new_resource. Chef 11 appears to resolve the attributes
   # with precedence while Chef 10 copies to not (TBD: find documentation to support observed behavior).
+    Chef::Log.info("Before Mongos")
   if node['mongodb']['is_mongos']
     provider = 'mongos'
     # mongos will fail to start if dbpath is set
     node.default['mongodb']['config']['dbpath'] = nil
+    Chef::Log.info("node['mongodb']['config']['configdb'] #{node['mongodb']['config']['configdb']}")
     unless node['mongodb']['config']['configdb']
+      Chef::Log.info("params[:configservers] #{params[:configservers]}")
       node.default['mongodb']['config']['configdb'] = params[:configservers].map do |n|
         "#{(n['mongodb']['configserver_url'] || n['fqdn'])}:#{n['mongodb']['config']['port']}"
       end.sort.join(',')
+      Chef::Log.info("node.default['mongodb']['config']['configdb'] -> #{node.default['mongodb']['config']['configdb']}")
     end
   else
     provider = 'mongod'

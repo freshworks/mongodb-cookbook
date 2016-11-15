@@ -11,13 +11,15 @@ file node['mongodb']['sysconfig_file'] do
 end
 
 if node.recipe?("mongodb::mongos")
-  node.default['mongodb']['config']['configdb'] = search(
+  config_nodes = node.default['mongodb']['config']['configdb'] = search(
     :node,
     "mongodb_cluster_name:#{node['mongodb']['cluster_name']} AND \
      recipes:mongodb\\:\\:configserver AND \
      chef_environment:#{node.chef_environment}"
-  ).collect{|n| "#{(n['mongodb']['configserver_url'] || n['fqdn'])}:#{n['mongodb']['port']}" }.sort.join(",")
-  %w(dbpath nojournal rest smallfiles oplogSize replSet).each { |k| node.default['mongodb']['config'].delete(k) }
+  )
+  Chef::Log.info("config_nodes.inspect : #{config_nodes.inspect}")
+  config_nodes.collect{|n| "#{(n['mongodb']['configserver_url'] || n['fqdn'])}:#{n['mongodb']['config']['port']}" }.sort.join(",")
+  %w(dbpath nojournal rest smallfiles oplogSize replSet).each { |k| config_nodes.default['mongodb']['config'].delete(k) }
 end
 
 # just-in-case config file drop

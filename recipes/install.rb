@@ -22,7 +22,7 @@ if node.recipe?("mongodb::mongos")
   Chef::Log.info("config_nodes.first['fqdn'] : #{config_nodes.first['fqdn']}")
   Chef::Log.info("config_nodes.first['mongodb']['port'] : #{config_nodes.first['mongodb']['port']}")
   config_nodes.collect{|n| "#{(n['mongodb']['configserver_url'] || n['fqdn'])}:#{n['mongodb']['port']}" }.sort.join(",")
-  Chef::Log.info("config_nodes.default['mongodb']['config'] : #{cconfig_nodes.default['mongodb']['config']}")
+  Chef::Log.info("config_nodes.default['mongodb']['config'] : #{config_nodes.default['mongodb']['config']}")
   %w(dbpath nojournal rest smallfiles oplogSize replSet).each { |k| config_nodes.default['mongodb']['config'].delete(k) }
 end
 

@@ -165,13 +165,15 @@ define :mongodb_instance,
   end
 
   # dbpath dir [make sure it exists]
-  directory new_resource.dbpath do
-    owner new_resource.mongodb_user
-    group new_resource.mongodb_group
-    mode '0755'
-    action :create
-    recursive true
-    not_if { new_resource.is_mongos }
+  unless new_resource.is_mongos
+    directory new_resource.dbpath do
+      owner new_resource.mongodb_user
+      group new_resource.mongodb_group
+      mode '0755'
+      action :create
+      recursive true
+      not_if { new_resource.is_mongos }
+    end
   end
 
   # Reload systemctl for RHEL 7+ after modifying the init file.

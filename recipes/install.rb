@@ -11,19 +11,13 @@ file node['mongodb']['sysconfig_file'] do
 end
 
 if node.recipe?("mongodb::mongos")
-  config_nodes = node.default['mongodb']['config']['configdb'] = search(
+  node.default['mongodb']['config']['configdb'] = search(
     :node,
     "mongodb_cluster_name:#{node['mongodb']['cluster_name']} AND \
      recipes:mongodb\\:\\:configserver AND \
      chef_environment:#{node.chef_environment}"
-  )
-  Chef::Log.info("config_nodes.inspect : #{config_nodes.inspect}")
-  Chef::Log.info("config_nodes.size : #{config_nodes.size}")
-  Chef::Log.info("config_nodes.first['fqdn'] : #{config_nodes.first['fqdn']}")
-  Chef::Log.info("config_nodes.first['mongodb']['port'] : #{config_nodes.first['mongodb']['port']}")
-  config_nodes.collect{|n| "#{(n['mongodb']['configserver_url'] || n['fqdn'])}:#{n['mongodb']['port']}" }.sort.join(",")
-  Chef::Log.info("config_nodes.default['mongodb']['config'] : #{config_nodes.first.default['mongodb']['config']}")
-  %w(dbpath nojournal rest smallfiles oplogSize replSet).each { |k| config_nodes.default['mongodb']['config'].delete(k) }
+  ).collect{|n| "#{(n['mongodb']['configserver_url'] || n['fqdn'])}:#{n['mongodb']['port']}" }.sort.join(",")
+  %w(dbpath nojournal rest smallfiles oplogSize replSet).each { |k| node.default['mongodb']['config'].delete(k) }
 end
 
 # just-in-case config file drop

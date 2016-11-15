@@ -210,6 +210,7 @@ class Chef::ResourceDefinitionList::MongoDB
     require 'rubygems'
     require 'mongo'
 
+    Chef::Log.info("Inside Configure Shards")
     shard_groups = Hash.new { |h, k| h[k] = [] }
 
     shard_nodes.each do |n|
@@ -223,7 +224,7 @@ class Chef::ResourceDefinitionList::MongoDB
       end
       shard_groups[key] << "#{n['fqdn']}:#{n['mongodb']['config']['port']}"
     end
-    Chef::Log.info(shard_groups.inspect)
+    Chef::Log.info("Shard groups.inspect -> #{shard_groups.inspect}")
 
     shard_members = []
     shard_groups.each do |name, members|
@@ -233,7 +234,7 @@ class Chef::ResourceDefinitionList::MongoDB
         shard_members << "#{name}/#{members.join(',')}"
       end
     end
-    Chef::Log.info(shard_members.inspect)
+    Chef::Log.info("shard_members.inspect -> #{shard_members.inspect}")
 
     begin
       connection = Mongo::Connection.new('localhost', node['mongodb']['config']['port'], :op_timeout => 5)
@@ -241,7 +242,7 @@ class Chef::ResourceDefinitionList::MongoDB
       Chef::Log.warn("Could not connect to database: 'localhost:#{node['mongodb']['config']['port']}', reason #{e}")
       return
     end
-
+    Chef::Log.info("Connection -> #{connection}")
     admin = connection['admin']
 
     shard_members.each do |shard|
@@ -252,7 +253,7 @@ class Chef::ResourceDefinitionList::MongoDB
       rescue Mongo::OperationTimeout
         result = "Adding shard '#{shard}' timed out, run the recipe again to check the result"
       end
-      Chef::Log.info(result.inspect)
+      Chef::Log.info("result.inspect -> #{result.inspect}")
     end
   end
 

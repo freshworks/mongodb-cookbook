@@ -211,6 +211,12 @@ define :mongodb_instance,
     end
   end
 
+  Chef::Log.info("new_resource.name -> #{new_resource.name}")
+  Chef::Log.info("new_resource.service_action -> #{new_resource.service_action}")
+  Chef::Log.info("new_resource.is_mongos -> #{new_resource.is_mongos}")
+  Chef::Log.info("new_resource.auto_configure_sharding -> #{new_resource.auto_configure_sharding}")
+  Chef::Log.info("new_resource.is_replicaset -> #{new_resource.is_replicaset}")
+  Chef::Log.info("new_resource.auto_configure_replicaset -> #{new_resource.auto_configure_replicaset}")
   # service
   service new_resource.name do
     provider Chef::Provider::Service::Upstart if node['mongodb']['apt_repo'] == 'ubuntu-upstart'
@@ -248,6 +254,8 @@ define :mongodb_instance,
     end
   end
 
+  Chef::Log.info("Before Mongos")
+
   # sharding
   if new_resource.is_mongos && new_resource.auto_configure_sharding
     # add all shards
@@ -259,7 +267,7 @@ define :mongodb_instance,
        mongodb_is_shard:true AND \
        chef_environment:#{node.chef_environment}"
     )
-
+    Chef::Log.info("shard_nodes.inspect -> #{shard_nodes.inspect}")
     ruby_block 'config_sharding' do
       block do
         MongoDB.configure_shards(node, shard_nodes)

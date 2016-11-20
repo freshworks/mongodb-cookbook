@@ -1,0 +1,3 @@
+<% node[:opsworks_tcp_setup][:sysctl].each do |systcl, value| %>
+  <%= systcl %>=<%= value %>
+<% end %>

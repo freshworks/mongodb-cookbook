@@ -18,7 +18,7 @@ if node.recipe?("mongodb::mongos")
     "mongodb_cluster_name:#{node['mongodb']['cluster_name']} AND \
      recipes:mongodb\\:\\:configserver AND \
      chef_environment:#{node.chef_environment}"
-  ).collect{|n| "#{(n['mongodb']['configserver_url'] || n['fqdn'])}:#{n['mongodb']['port']}" }.sort.join(",")
+  ).collect{|n| "#{(n['mongodb']['configserver_url'] || n['fqdn'])}:#{n['mongodb']['config']['net']['port']}" }.sort.join(",")
   %w(dbpath nojournal rest smallfiles oplogSize replSet storage).each { |k| node.default['mongodb']['config'].delete(k) }
 end
 

@@ -93,9 +93,9 @@ if node[:mongodb][:key_file_content]
   end
 end
 
-template "/etc/security/limits.d/99-mongod-nproc.conf" do
-  source "nproc.erb"
-  group node[:mongodb][:group]
-  owner node[:mongodb][:user]
-  mode 0644
-end
+# template "/etc/security/limits.d/99-mongod-nproc.conf" do
+#   source "nproc.erb"
+#   group node[:mongodb][:group]
+#   owner node[:mongodb][:user]
+#   mode 0644
+# end

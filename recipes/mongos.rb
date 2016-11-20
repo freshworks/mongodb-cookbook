@@ -25,11 +25,19 @@ node.override['mongodb']['instance_name'] = 'mongos'
 
 include_recipe 'mongodb::install'
 
-ruby_block 'chef_gem_at_converge_time' do
-  block do
-    node['mongodb']['ruby_gems'].each do |gem, version|
-      version = Gem::Dependency.new(gem, version)
-      Chef::Provider::Package::Rubygems::GemEnvironment.new.install(version)
+# ruby_block 'chef_gem_at_converge_time' do
+#   block do
+#     node['mongodb']['ruby_gems'].each do |gem, version|
+#       version = Gem::Dependency.new(gem, version)
+#       Chef::Provider::Package::Rubygems::GemEnvironment.new.install(version)
+#     end
+#   end
+# end
+
+node['mongodb']['ruby_gems'].each do |gem, version|
+  chef_gem gem do
+    if version
+      version version
     end
   end
 end

@@ -40,13 +40,13 @@ define :mongodb_instance,
     provider = 'mongos'
     # mongos will fail to start if dbpath is set
     node.default['mongodb']['config']['dbpath'] = nil
-    Chef::Log.info("node['mongodb']['config']['configdb'] #{node['mongodb']['config']['configdb']}")
-    unless node['mongodb']['config']['configdb']
+    Chef::Log.info("node['mongodb']['config']['sharding']['configDB'] #{node['mongodb']['config']['sharding']['configDB']}")
+    unless node['mongodb']['config']['sharding']['configDB']
       Chef::Log.info("params[:configservers] #{params[:configservers]}")
-      node.default['mongodb']['config']['configdb'] = params[:configservers].map do |n|
-        "#{(n['mongodb']['configserver_url'] || n['fqdn'])}:#{n['mongodb']['config']['port']}"
+      node.default['mongodb']['config']['sharding']['configDB'] = params[:configservers].map do |n|
+        "#{(n['mongodb']['configserver_url'] || n['fqdn'])}:#{n['mongodb']['config']['net']['port']}"
       end.sort.join(',')
-      Chef::Log.info("node.default['mongodb']['config']['configdb'] -> #{node.default['mongodb']['config']['configdb']}")
+      Chef::Log.info("node.default['mongodb']['config']['configdb'] -> #{node.default['mongodb']['config']['sharding']['configDB']}")
     end
   else
     provider = 'mongod'

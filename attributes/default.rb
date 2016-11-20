@@ -110,7 +110,7 @@ default[:mongodb][:key_file_content] = nil
 # install the mongo and bson_ext ruby gems at compile time to make them globally available
 # TODO: remove bson_ext once mongo gem supports bson >= 2
 default['mongodb']['ruby_gems'] = {
-  :mongo => '1.12.5',
-  :bson => '1.12.5',
-  :bson_ext => '1.12.5'
+  :mongo => '3.0.0',
+  :bson => '3.0.0',
+  :bson_ext => '3.0.0'
 }

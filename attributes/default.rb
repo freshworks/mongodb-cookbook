@@ -88,7 +88,7 @@ when 'rhel', 'fedora'
     Chef::Log.warn("Amazon doesn't provide mongodb, forcing use of mongodb-org repo")
     default[:mongodb][:repo] = 'http://repo.mongodb.org/yum/amazon/2013.03/mongodb-org'
     default[:mongodb][:install_method] = 'mongodb-org'
-    default[:mongodb][:package_name] = 'mongodb-org'
+    default[:mongodb][:package_name] = 'mongodb-org-3.2'
   end
 when 'debian'
   if node['platform'] == 'ubuntu'

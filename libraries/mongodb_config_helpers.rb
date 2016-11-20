@@ -20,7 +20,7 @@ module MongoDBConfigHelpers
   
   def to_yaml_options(config)
     require 'yaml'
-    
+    puts config
     hash = Hash.new
     config.sort.each do |key, value|
       next if value.nil? || value == ''

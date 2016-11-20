@@ -43,7 +43,7 @@ node['mongodb']['ruby_gems'].each do |gem, version|
   $LOAD_PATH << "#{gem_path}/gems/#{gem}-#{version}/lib"
 
 end
-
+require 'mongo'
 unless node['mongodb']['is_shard']
   mongodb_instance node['mongodb']['instance_name'] do
     mongodb_type 'mongod'

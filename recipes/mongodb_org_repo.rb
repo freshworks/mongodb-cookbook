@@ -21,7 +21,7 @@
 
 # Sets up the repositories for stable mongodb-org packages found here:
 # http://www.mongodb.org/downloads#packages
-node.override['mongodb']['package_name'] = 'mongodb-org-3.2.9'
+node.override['mongodb']['package_name'] = 'mongodb-org'
 Chef::Log.info("yum repo selected is #{node['mongodb']['repo']}/#{node[:mongodb][:package_base_version]}/#{node['kernel']['machine']  =~ /x86_64/ ? 'x86_64' : 'i686'}/")
 case node['platform_family']
 when 'debian'
@@ -36,7 +36,7 @@ when 'debian'
   end
 
 when 'rhel', 'fedora'
-  yum_repository 'mongodb-org-3.2' do
+  yum_repository 'mongodb-org' do
     description 'mongodb RPM Repository'
     baseurl "#{node['mongodb']['repo']}/#{node[:mongodb][:package_base_version]}/#{node['kernel']['machine']  =~ /x86_64/ ? 'x86_64' : 'i686'}/"
     action :create

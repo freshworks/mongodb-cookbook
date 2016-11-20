@@ -50,7 +50,8 @@ default[:mongodb][:dbconfig_file_template] = 'mongodb.conf.erb'
 default[:mongodb][:dbconfig_file] = '/etc/mongodb.conf'
 
 default[:mongodb][:package_name] = 'mongodb'
-default[:mongodb][:package_version] = nil
+default[:mongodb][:package_base_version] = "3.2"
+default[:mongodb][:package_version] = '3.2.9'
 
 default[:mongodb][:default_init_name] = 'mongodb'
 default[:mongodb][:instance_name] = 'mongodb'
@@ -83,8 +84,9 @@ when 'rhel', 'fedora'
   default[:mongodb][:default_init_name] = 'mongod'
   default[:mongodb][:instance_name] = 'mongod'
   # then there is this guy
-  if node['platform'] == 'centos' || node['platform'] == 'amazon'
-    Chef::Log.warn("CentOS doesn't provide mongodb, forcing use of mongodb-org repo")
+  if node['platform'] == 'amazon'
+    Chef::Log.warn("Amazon doesn't provide mongodb, forcing use of mongodb-org repo")
+    default[:mongodb][:repo] = 'http://repo.mongodb.org/yum/amazon/2013.03/mongodb-org'
     default[:mongodb][:install_method] = 'mongodb-org'
     default[:mongodb][:package_name] = 'mongodb-org'
   end

@@ -59,7 +59,7 @@ if configsrvs.length != 1 && configsrvs.length != 3
   Chef::Log.error("Found #{configsrvs.length} configservers, need either one or three of them")
   fail 'Wrong number of configserver nodes' unless Chef::Config[:solo]
 end
-
+Chef::Log.info("configsrv config #{configsrvs[0]['mongodb'].inspect}")
 mongodb_instance node['mongodb']['instance_name'] do
   mongodb_type 'mongos'
   port         node['mongodb']['config']['net']['port']

@@ -39,6 +39,8 @@ node['mongodb']['ruby_gems'].each do |gem, version|
       version version
     end
   end.run_action(:install)
+  gem_path = Gem.path.first
+  $LOAD_PATH << "#{gem_path}/gems/#{gem}-#{version}/lib"
 
 end
 

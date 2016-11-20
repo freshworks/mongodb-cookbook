@@ -38,6 +38,11 @@ node['mongodb']['ruby_gems'].each do |gem, version|
       version version
     end
   end
+  gem_package gem do
+    if version
+      version version
+    end
+  end
 end
 
 unless node['mongodb']['is_shard']

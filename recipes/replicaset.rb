@@ -34,15 +34,12 @@ include_recipe 'mongodb::install'
 
 node['mongodb']['ruby_gems'].each do |gem, version|
   chef_gem gem do
+    action :nothing
     if version
       version version
     end
-  end
-  gem_package gem do
-    if version
-      version version
-    end
-  end
+  end.run_action(:install)
+
 end
 
 unless node['mongodb']['is_shard']

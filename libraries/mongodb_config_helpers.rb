@@ -25,14 +25,12 @@ module MongoDBConfigHelpers
     config.sort.each do |key, value|
       next if value.nil? || value == ''
       if value.kind_of?(Hash)
-        nested_val_exists = false
         value.each do |nestedKey, nestedValue|
           #puts "nested val #{nestedKey} #{nestedValue}"
           next if nestedValue.nil? || nestedValue == ''
-          nested_val_exists = true
-          hash[key] = Hash.new(nestedKey, nestedValue)
+          hash[key] ||= {}
+          hash[key][nestedKey] = nestedValue
         end
-        next unless nested_val_exists
       else
         hash[key] = value
       end

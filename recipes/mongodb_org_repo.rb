@@ -36,7 +36,7 @@ when 'debian'
   end
 
 when 'rhel', 'fedora'
-  yum_repository 'mongodb-org' do
+  yum_repository 'mongodb-org-3.2' do
     description 'mongodb RPM Repository'
     baseurl "#{node['mongodb']['repo']}/#{node[:mongodb][:package_base_version]}/#{node['kernel']['machine']  =~ /x86_64/ ? 'x86_64' : 'i686'}/"
     action :create

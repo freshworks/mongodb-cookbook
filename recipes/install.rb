@@ -63,7 +63,7 @@ template init_file do
     :sysconfig_file => node['mongodb']['sysconfig_file'],
     :ulimit =>         node['mongodb']['ulimit'],
     :bind_ip =>        node['mongodb']['config']['net']['bindIp'],
-    :port =>           node['mongodb']['config']['port']
+    :port =>           node['mongodb']['config']['net']['port']
   )
   action :create_if_missing
 

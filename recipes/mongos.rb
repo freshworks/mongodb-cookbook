@@ -62,7 +62,7 @@ end
 
 mongodb_instance node['mongodb']['instance_name'] do
   mongodb_type 'mongos'
-  port         node['mongodb']['config']['port']
+  port         node['mongodb']['config']['net']['port']
   logpath      node['mongodb']['config']['logpath']
   dbpath       node['mongodb']['config']['dbpath']
   configservers configsrvs

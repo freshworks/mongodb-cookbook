@@ -35,6 +35,9 @@ else
   end
 end
 
+Chef::Log.info("mongodb::mongos -> #{node.run_context.loaded_recipe?("mongodb::mongos")}")
+Chef::Log.info("allow_mongodb_instance_run -> #{allow_mongodb_instance_run}")
+
 if allow_mongodb_instance_run
   mongodb_instance node['mongodb']['instance_name'] do
     mongodb_type 'mongod'

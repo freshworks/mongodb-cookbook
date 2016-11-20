@@ -35,14 +35,18 @@ define :mongodb_instance,
 
   # Make changes to node['mongodb']['config'] before copying to new_resource. Chef 11 appears to resolve the attributes
   # with precedence while Chef 10 copies to not (TBD: find documentation to support observed behavior).
+    Chef::Log.info("Before Mongos")
   if node['mongodb']['is_mongos']
     provider = 'mongos'
     # mongos will fail to start if dbpath is set
     node.default['mongodb']['config']['dbpath'] = nil
+    Chef::Log.info("node['mongodb']['config']['configdb'] #{node['mongodb']['config']['configdb']}")
     unless node['mongodb']['config']['configdb']
+      Chef::Log.info("params[:configservers] #{params[:configservers]}")
       node.default['mongodb']['config']['configdb'] = params[:configservers].map do |n|
         "#{(n['mongodb']['configserver_url'] || n['fqdn'])}:#{n['mongodb']['config']['port']}"
       end.sort.join(',')
+      Chef::Log.info("node.default['mongodb']['config']['configdb'] -> #{node.default['mongodb']['config']['configdb']}")
     end
   else
     provider = 'mongod'
@@ -88,6 +92,10 @@ define :mongodb_instance,
   new_resource.template_cookbook          = node['mongodb']['template_cookbook']
   new_resource.ulimit                     = node['mongodb']['ulimit']
   new_resource.reload_action              = node['mongodb']['reload_action']
+  Chef::Log.info("Inside Mongodb.rb")
+  Chef::Log.info("node['mongodb']['is_configserver'] : #{node['mongodb']['is_configserver']}")
+  Chef::Log.info("node['mongodb']['cluster_name'] : #{node['mongodb']['cluster_name']}")
+  Chef::Log.info("node['mongodb']['apt_repo'] : #{node['mongodb']['apt_repo']}")
 
   if node['mongodb']['apt_repo'] == 'ubuntu-upstart'
     new_resource.init_file = File.join(node['mongodb']['init_dir'], "#{new_resource.name}.conf")
@@ -121,7 +129,7 @@ define :mongodb_instance,
     # not a replicaset, so no name
     replicaset_name = nil
   end
-
+  
   # default file
   template new_resource.sysconfig_file do
     cookbook new_resource.template_cookbook
@@ -161,13 +169,15 @@ define :mongodb_instance,
   end
 
   # dbpath dir [make sure it exists]
-  directory new_resource.dbpath do
-    owner new_resource.mongodb_user
-    group new_resource.mongodb_group
-    mode '0755'
-    action :create
-    recursive true
-    not_if { new_resource.is_mongos }
+  unless new_resource.is_mongos
+    directory new_resource.dbpath do
+      owner new_resource.mongodb_user
+      group new_resource.mongodb_group
+      mode '0755'
+      action :create
+      recursive true
+      not_if { new_resource.is_mongos }
+    end
   end
 
   # Reload systemctl for RHEL 7+ after modifying the init file.
@@ -198,10 +208,18 @@ define :mongodb_instance,
     end
   end
 
+  Chef::Log.info("new_resource.name -> #{new_resource.name}")
+  Chef::Log.info("new_resource.service_action -> #{new_resource.service_action}")
+  Chef::Log.info("new_resource.is_mongos -> #{new_resource.is_mongos}")
+  Chef::Log.info("new_resource.auto_configure_sharding -> #{new_resource.auto_configure_sharding}")
+  Chef::Log.info("new_resource.is_replicaset -> #{new_resource.is_replicaset}")
+  Chef::Log.info("new_resource.auto_configure_replicaset -> #{new_resource.auto_configure_replicaset}")
   # service
   service new_resource.name do
+    Chef::Log.info("Inside #{new_resource.name} service")
     provider Chef::Provider::Service::Upstart if node['mongodb']['apt_repo'] == 'ubuntu-upstart'
     supports :status => true, :restart => true
+    Chef::Log.info("new_resource.service_notifies -> #{new_resource.service_notifies}")
     action new_resource.service_action
     new_resource.service_notifies.each do |service_notify|
       notifies :run, service_notify
@@ -235,6 +253,8 @@ define :mongodb_instance,
     end
   end
 
+  Chef::Log.info("Before Mongos")
+
   # sharding
   if new_resource.is_mongos && new_resource.auto_configure_sharding
     # add all shards
@@ -246,8 +266,9 @@ define :mongodb_instance,
        mongodb_is_shard:true AND \
        chef_environment:#{node.chef_environment}"
     )
-
+    Chef::Log.info("shard_nodes.inspect -> #{shard_nodes.inspect}")
     ruby_block 'config_sharding' do
+      Chef::Log.info("Inside Config Sharding")      
       block do
         MongoDB.configure_shards(node, shard_nodes)
         MongoDB.configure_sharded_collections(node, new_resource.sharded_collections)
@@ -255,4 +276,5 @@ define :mongodb_instance,
       action :nothing
     end
   end
+
 end

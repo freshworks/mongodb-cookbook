@@ -65,7 +65,7 @@ define :mongodb_instance,
   new_resource = OpenStruct.new
 
   new_resource.name                       = params[:name]
-  new_resource.dbpath                     = node['mongodb']['config']['storage']['dbPath']
+  new_resource.dbpath                     = node['mongodb']['config']['storage']['dbPath'] if node['mongodb']['config']['storage'].present?
   new_resource.logpath                    = node['mongodb']['config']['systemLog']['path']
   new_resource.replicaset                 = params[:replicaset]
   new_resource.service_action             = params[:action]

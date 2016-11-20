@@ -11,6 +11,5 @@ ruby_block 'config_sharding' do
     MongoDB.configure_shards(node, shard_nodes)
     MongoDB.configure_sharded_collections(node, new_resource.sharded_collections)
   end
-  cookbook 'mongodb'
   action :create
 end

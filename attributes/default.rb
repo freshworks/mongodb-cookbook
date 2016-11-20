@@ -51,7 +51,7 @@ default[:mongodb][:dbconfig_file] = '/etc/mongodb.conf'
 
 default[:mongodb][:package_name] = 'mongodb'
 default[:mongodb][:package_base_version] = "3.2"
-default[:mongodb][:package_version] = '3.2.9-1.amzn1'
+default[:mongodb][:package_version] = '3.2.11-1.amzn1'
 
 default[:mongodb][:default_init_name] = 'mongodb'
 default[:mongodb][:instance_name] = 'mongodb'

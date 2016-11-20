@@ -1,6 +1,6 @@
 shard_nodes = search(
   :node,
-  "mongodb_cluster_name:#{new_resource.cluster_name} AND \
+  "mongodb_cluster_name:#{node['mongodb']['cluster_name']} AND \
    mongodb_is_shard:true AND \
    chef_environment:#{node.chef_environment}"
 )

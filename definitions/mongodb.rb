@@ -262,7 +262,7 @@ define :mongodb_instance,
   Chef::Log.info("Before Mongos")
 
   # sharding
-  if new_resource.is_mongos && new_resource.auto_configure_sharding && node['hostname'] == node["mongodb"]["primary_mongos_server"]
+  if new_resource.is_mongos && new_resource.auto_configure_sharding
     # add all shards
     # configure the sharded collections
 

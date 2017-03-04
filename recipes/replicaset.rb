@@ -44,7 +44,9 @@ node['mongodb']['ruby_gems'].each do |gem, version|
 
 end
 require 'mongo'
+Chef::Log.info("AM I a shard #{node['mongodb']['is_shard']}")
 unless node['mongodb']['is_shard']
+  Chef::Log.info("definitely not")
   mongodb_instance node['mongodb']['instance_name'] do
     mongodb_type 'mongod'
     port         node['mongodb']['config']['net']['port']
